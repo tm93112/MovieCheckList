@@ -40,7 +40,8 @@ const movies = (state = initialState, action) => {
               }
             : movie
           )
-        ]
+        ],
+        isLoading: true
       }
     case 'TOGGLE_MOVIE':
       return {

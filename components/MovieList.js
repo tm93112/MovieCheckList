@@ -44,8 +44,13 @@ class MovieList extends React.Component {
     axios.get(MOVIE_SERVER_URL)
       .then((response) => {
         const serverMovies = response.data;
+        let ids = [];
+        if (serverMovies.length > 0) {
+          ids = serverMovies.map(movie => movie.id);
+        }
         const localMovies = MovieService.findAll();
-        const movieList = [...new Set([...serverMovies, ...localMovies])];
+        const newLocal = localMovies.filter(movie => !ids.includes(movie.id));
+        movieList = [...new Set([...serverMovies ,...newLocal])];
         load(movieList);
       });
   }

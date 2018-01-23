@@ -17,7 +17,7 @@ import { updateMovie } from '../redux/actions';
 import MovieService from '../services/MovieService';
 import Movie from '../model/Movie';
 
-const URL_WITH_KEY = "http://www.omdbapi.com/?apikey=35756462&i=";
+const URL_WITH_KEY = "https://www.omdbapi.com/?apikey=35756462&i=";
 
 class EditForm extends Component {
 
@@ -181,6 +181,17 @@ class EditForm extends Component {
     const {
       movie
     } = this.state;
+    const {
+      id,
+      title,
+      imdbURL,
+      imdbID,
+      trailerURL,
+      genres,
+      year,
+      languages,
+      runTime
+    } = movie;
     const omdbData = {
       imdbID,
       title,
@@ -196,7 +207,7 @@ class EditForm extends Component {
   }
 
   setDataFromOMDB(movie) {
-    const url = URL_WITH_KEY + movie.imdbID;
+    const url = `${URL_WITH_KEY}${movie.imdbID}`;
     axios.get(url)
       .then((response) => {
         const genres = response.data.Genre.split(", ");

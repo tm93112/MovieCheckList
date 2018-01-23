@@ -86368,7 +86368,7 @@ __d(function (global, require, module, exports, _dependencyMap) {
     };
   }
 
-  var URL_WITH_KEY = "http://www.omdbapi.com/?apikey=35756462&i=";
+  var URL_WITH_KEY = "https://www.omdbapi.com/?apikey=35756462&i=";
 
   var EditForm = _wrapComponent("EditForm")(function (_Component) {
     _inherits(EditForm, _Component);
@@ -86631,6 +86631,15 @@ __d(function (global, require, module, exports, _dependencyMap) {
       key: "onSave",
       value: function onSave() {
         var movie = this.state.movie;
+        var id = movie.id,
+            title = movie.title,
+            imdbURL = movie.imdbURL,
+            imdbID = movie.imdbID,
+            trailerURL = movie.trailerURL,
+            genres = movie.genres,
+            year = movie.year,
+            languages = movie.languages,
+            runTime = movie.runTime;
         var omdbData = {
           imdbID: imdbID,
           title: title,
@@ -86651,7 +86660,7 @@ __d(function (global, require, module, exports, _dependencyMap) {
       value: function setDataFromOMDB(movie) {
         var _this2 = this;
 
-        var url = URL_WITH_KEY + movie.imdbID;
+        var url = "" + URL_WITH_KEY + movie.imdbID;
 
         _axios2.default.get(url).then(function (response) {
           var genres = response.data.Genre.split(", ");
@@ -86696,7 +86705,7 @@ __d(function (global, require, module, exports, _dependencyMap) {
             style: style.scrollView,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 228
+              lineNumber: 239
             }
           },
           _react3.default.createElement(
@@ -86704,7 +86713,7 @@ __d(function (global, require, module, exports, _dependencyMap) {
             {
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 229
+                lineNumber: 240
               }
             },
             titleLabel,
@@ -86715,7 +86724,7 @@ __d(function (global, require, module, exports, _dependencyMap) {
             {
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 233
+                lineNumber: 244
               }
             },
             trailerLabel,
@@ -86726,7 +86735,7 @@ __d(function (global, require, module, exports, _dependencyMap) {
             {
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 237
+                lineNumber: 248
               }
             },
             imdbLabel,
@@ -86737,7 +86746,7 @@ __d(function (global, require, module, exports, _dependencyMap) {
             {
               __source: {
                 fileName: _jsxFileName,
-                lineNumber: 241
+                lineNumber: 252
               }
             },
             _react3.default.createElement(
@@ -86747,7 +86756,7 @@ __d(function (global, require, module, exports, _dependencyMap) {
                 style: style.saveButtonContainer,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 242
+                  lineNumber: 253
                 }
               },
               _react3.default.createElement(
@@ -86756,7 +86765,7 @@ __d(function (global, require, module, exports, _dependencyMap) {
                   style: style.saveButton,
                   __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 246
+                    lineNumber: 257
                   }
                 },
                 "Save Details"

@@ -10,7 +10,9 @@ function Header({ headerText, returnIcon }){
   const titleConfig = {
     title: headerText,
     tintColor: "#ffffff",
-    style: { fontSize: 20 }
+    style: { fontSize: 20, marginLeft: 40, marginRight: 40 },
+    ellipsizeMode: 'tail',
+    numberOfLines: 1
   }
 
   const icon = returnIcon
