@@ -7,6 +7,7 @@ export var TypeKeys;
     TypeKeys["UPDATE_MOVIE"] = "UPDATE_MOVIE";
     TypeKeys["SORT"] = "SORT";
     TypeKeys["LOAD_MOVIES"] = "LOAD_MOVIES";
+    TypeKeys["DELETE_MOVIE"] = "DELETE_MOVIE";
 })(TypeKeys || (TypeKeys = {}));
 /***** actions ******/
 export function addMovie(movie) {
@@ -41,6 +42,12 @@ export function loadMovies(movieList) {
     return {
         type: TypeKeys.LOAD_MOVIES,
         movieList
+    };
+}
+export function deleteMovie(id) {
+    return {
+        type: TypeKeys.DELETE_MOVIE,
+        id
     };
 }
 //# sourceMappingURL=index.js.map

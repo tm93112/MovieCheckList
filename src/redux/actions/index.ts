@@ -7,7 +7,8 @@ export enum TypeKeys {
   TOGGLE_DISPLAY_COMPLETED = 'TOGGLE_DISPLAY_COMPLETED',
   UPDATE_MOVIE = 'UPDATE_MOVIE',
   SORT = 'SORT',
-  LOAD_MOVIES = 'LOAD_MOVIES'
+  LOAD_MOVIES = 'LOAD_MOVIES',
+  DELETE_MOVIE = 'DELETE_MOVIE'
 }
 
 export interface AddMovieAction {
@@ -36,6 +37,11 @@ export interface SortAction {
 export interface LoadMoviesAction {
   type: TypeKeys.LOAD_MOVIES;
   movieList: Array<Movie>;
+}
+
+export interface DeleteMovieAction {
+  type: TypeKeys.DELETE_MOVIE;
+  id: string;
 }
 
 export type ActionTypes =
@@ -84,5 +90,12 @@ export function loadMovies(movieList: Array<Movie>): LoadMoviesAction {
   return {
     type: TypeKeys.LOAD_MOVIES,
     movieList
+  };
+}
+
+export function deleteMovie(id: string): DeleteMovieAction {
+  return {
+    type: TypeKeys.DELETE_MOVIE,
+    id
   };
 }

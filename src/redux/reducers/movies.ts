@@ -23,22 +23,22 @@ const initialState: MovieCheckListState = {
 const movies = (state: MovieCheckListState = initialState, action: ActionType): MovieCheckListState => {
   switch (action.type) {
     case TypeKeys.LOAD_MOVIES:
-    return {
-      ...state,
-      movieList: action.movieList,
-      isLoading: false
-    }
+      return {
+        ...state,
+        movieList: action.movieList,
+        isLoading: false
+      }
     case TypeKeys.ADD_MOVIE:
-    const newMovie = new Movie(action.movie.title);
-    newMovie.id = action.movie.id;
-    newMovie.completed = action.movie.completed;
-    return {
-      ...state,
-      movieList: [
-        ...state.movieList,
-        newMovie
-      ]
-    }
+      const newMovie = new Movie(action.movie.title);
+      newMovie.id = action.movie.id;
+      newMovie.completed = action.movie.completed;
+      return {
+        ...state,
+        movieList: [
+          ...state.movieList,
+          newMovie
+        ]
+      }
     case TypeKeys.UPDATE_MOVIE:
       return {
         ...state,
@@ -81,6 +81,11 @@ const movies = (state: MovieCheckListState = initialState, action: ActionType): 
       return {
         ...state,
         movieList: state.movieList.slice().sort((a: Movie, b: Movie) => compare(a, b))
+      }
+    case TypeKeys.DELETE_MOVIE:
+      return {
+        ...state,
+        movieList: state.movieList.filter((movie: Movie) => movie.id !== action.id)
       }
     default:
       return state;

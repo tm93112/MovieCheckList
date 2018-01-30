@@ -31,6 +31,8 @@ const movies = (state = initialState, action) => {
             return Object.assign({}, state, { displayCompleted: !state.displayCompleted });
         case TypeKeys.SORT:
             return Object.assign({}, state, { movieList: state.movieList.slice().sort((a, b) => compare(a, b)) });
+        case TypeKeys.DELETE_MOVIE:
+            return Object.assign({}, state, { movieList: state.movieList.filter((movie) => movie.id !== action.id) });
         default:
             return state;
     }

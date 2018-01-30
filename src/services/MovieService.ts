@@ -70,10 +70,13 @@ let movieService = {
     );
   },
 
-  delete: function(movie: Movie) {
+  delete: function(id: string) {
+    let movies = repository.objects('Movie');
+    let movie = movies.filtered('id = $0', id);
     repository.write(() => {
       repository.delete(movie);
     });
+    axios.delete(MOVIE_SERVER_URL + `/${id}`);
   }
 }
 

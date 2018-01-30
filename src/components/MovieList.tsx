@@ -23,7 +23,7 @@ const MOVIE_SERVER_URL = 'http://192.168.1.10:8080/api/movies';
 
 export interface Props {
   movieList: Array<Movie>;
-  onMovieClick: () => void;
+  onMovieCheck: () => void;
   displayCompleted: boolean;
   onShowCompletedClick: () => void;
   sort: () => void;
@@ -31,19 +31,19 @@ export interface Props {
   isLoading: boolean;
 }
 
-type OnMovieClickType = (id: string) => void;
+type OnMovieCheckType = (id: string) => void;
 
 class MovieList extends Component<Props, any> {
 
-  renderItem(movie: any, onMovieClick: OnMovieClickType, displayCompleted: boolean, isCompletedList?: boolean) {
+  renderItem(movie: any, onMovieCheck: OnMovieCheckType, displayCompleted: boolean, isCompletedList?: boolean) {
     const { item } = movie;
     const styling = isCompletedList ? styles.completedItem : styles.text;
     if ((!item.completed && !isCompletedList) || (item.completed && displayCompleted && isCompletedList)) {
       return(
         <ListItem
           text={item.title}
-          onCheck={onMovieClick}
-          onTitleClick={() => Actions.editMovie({ movie: item })}
+          onCheck={onMovieCheck}
+          onClickEdit={() => Actions.editMovie({ movie: item })}
           id={item.id}
           styling={styling}
           disabled={item.completed}
@@ -81,7 +81,7 @@ class MovieList extends Component<Props, any> {
   }
 
   renderFooter(movieList: Array<Movie>, displayCompleted: boolean,
-    onMovieClick: OnMovieClickType, onShowCompletedClick: () => void) {
+    onMovieCheck: OnMovieCheckType, onShowCompletedClick: () => void) {
     let completedMovies = [];
     if (movieList && movieList.length > 0) {
       completedMovies = movieList.filter((movie: MovieType) => movie.completed === true);
@@ -101,7 +101,7 @@ class MovieList extends Component<Props, any> {
           <FlatList
             data={completedMovies}
             keyExtractor={movie => movie.id}
-            renderItem={item => this.renderItem(item, onMovieClick, displayCompleted, true)}
+            renderItem={item => this.renderItem(item, onMovieCheck, displayCompleted, true)}
           />
         </View>
       )
@@ -111,13 +111,13 @@ class MovieList extends Component<Props, any> {
   render(){
     const {
       movieList,
-      onMovieClick,
+      onMovieCheck,
       displayCompleted,
       onShowCompletedClick,
       sort,
       isLoading
     } = this.props;
-    const footer = this.renderFooter(movieList, displayCompleted, onMovieClick, onShowCompletedClick);
+    const footer = this.renderFooter(movieList, displayCompleted, onMovieCheck, onShowCompletedClick);
     if (isLoading) {
       return(
         <View style={{ flex: 1}}>
@@ -133,7 +133,7 @@ class MovieList extends Component<Props, any> {
             data={movieList}
             extraData={displayCompleted}
             keyExtractor={movie => movie.id}
-            renderItem={item => this.renderItem(item, onMovieClick, displayCompleted)}
+            renderItem={item => this.renderItem(item, onMovieCheck, displayCompleted)}
             ListFooterComponent={footer}
           />
         </ScrollView>
@@ -188,7 +188,7 @@ function mapStateToProps(state: Store) {
 
 function mapDispatchToProps(dispatch: Dispatch<MovieCheckListState>) {
   return {
-    onMovieClick: (id: string) => dispatch(toggleMovie(id)),
+    onMovieCheck: (id: string) => dispatch(toggleMovie(id)),
     onShowCompletedClick: () => dispatch(toggleDisplayCompleted()),
     sort: () => dispatch(sortMovieList()),
     load: (movieList: Array<Movie>) => dispatch(loadMovies(movieList))

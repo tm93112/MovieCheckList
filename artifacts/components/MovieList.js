@@ -10,11 +10,11 @@ import Footer from './Footer';
 import MovieService from '../services/MovieService';
 const MOVIE_SERVER_URL = 'http://192.168.1.10:8080/api/movies';
 class MovieList extends Component {
-    renderItem(movie, onMovieClick, displayCompleted, isCompletedList) {
+    renderItem(movie, onMovieCheck, displayCompleted, isCompletedList) {
         const { item } = movie;
         const styling = isCompletedList ? styles.completedItem : styles.text;
         if ((!item.completed && !isCompletedList) || (item.completed && displayCompleted && isCompletedList)) {
-            return (React.createElement(ListItem, { text: item.title, onCheck: onMovieClick, onTitleClick: () => Actions.editMovie({ movie: item }), id: item.id, styling: styling, disabled: item.completed, checked: item.completed }));
+            return (React.createElement(ListItem, { text: item.title, onCheck: onMovieCheck, onClickEdit: () => Actions.editMovie({ movie: item }), id: item.id, styling: styling, disabled: item.completed, checked: item.completed }));
         }
     }
     componentDidMount() {
@@ -42,7 +42,7 @@ class MovieList extends Component {
         }
         return false;
     }
-    renderFooter(movieList, displayCompleted, onMovieClick, onShowCompletedClick) {
+    renderFooter(movieList, displayCompleted, onMovieCheck, onShowCompletedClick) {
         let completedMovies = [];
         if (movieList && movieList.length > 0) {
             completedMovies = movieList.filter((movie) => movie.completed === true);
@@ -53,12 +53,12 @@ class MovieList extends Component {
                 React.createElement(View, { style: styles.showCompletedButton },
                     React.createElement(TouchableOpacity, { style: { paddingTop: 10 }, onPress: onShowCompletedClick },
                         React.createElement(Text, { style: styles.showCompletedText }, toggleText))),
-                React.createElement(FlatList, { data: completedMovies, keyExtractor: movie => movie.id, renderItem: item => this.renderItem(item, onMovieClick, displayCompleted, true) })));
+                React.createElement(FlatList, { data: completedMovies, keyExtractor: movie => movie.id, renderItem: item => this.renderItem(item, onMovieCheck, displayCompleted, true) })));
         }
     }
     render() {
-        const { movieList, onMovieClick, displayCompleted, onShowCompletedClick, sort, isLoading } = this.props;
-        const footer = this.renderFooter(movieList, displayCompleted, onMovieClick, onShowCompletedClick);
+        const { movieList, onMovieCheck, displayCompleted, onShowCompletedClick, sort, isLoading } = this.props;
+        const footer = this.renderFooter(movieList, displayCompleted, onMovieCheck, onShowCompletedClick);
         if (isLoading) {
             return (React.createElement(View, { style: { flex: 1 } },
                 React.createElement(Text, null, "Loading...")));
@@ -66,7 +66,7 @@ class MovieList extends Component {
         return (React.createElement(View, { style: { flex: 1 } },
             React.createElement(NewMovieInput, null),
             React.createElement(ScrollView, { contentContainerStyle: styles.listContainer },
-                React.createElement(FlatList, { data: movieList, extraData: displayCompleted, keyExtractor: movie => movie.id, renderItem: item => this.renderItem(item, onMovieClick, displayCompleted), ListFooterComponent: footer })),
+                React.createElement(FlatList, { data: movieList, extraData: displayCompleted, keyExtractor: movie => movie.id, renderItem: item => this.renderItem(item, onMovieCheck, displayCompleted), ListFooterComponent: footer })),
             React.createElement(Footer, { onPress: sort })));
     }
 }
@@ -107,7 +107,7 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
     return {
-        onMovieClick: (id) => dispatch(toggleMovie(id)),
+        onMovieCheck: (id) => dispatch(toggleMovie(id)),
         onShowCompletedClick: () => dispatch(toggleDisplayCompleted()),
         sort: () => dispatch(sortMovieList()),
         load: (movieList) => dispatch(loadMovies(movieList))
