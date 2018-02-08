@@ -3,7 +3,8 @@ import { TypeKeys } from '../actions';
 const initialState = {
     displayCompleted: false,
     movieList: [],
-    isLoading: true
+    isLoading: true,
+    filterIsOpen: false
 };
 const movies = (state = initialState, action) => {
     switch (action.type) {
@@ -33,6 +34,8 @@ const movies = (state = initialState, action) => {
             return Object.assign({}, state, { movieList: state.movieList.slice().sort((a, b) => compare(a, b)) });
         case TypeKeys.DELETE_MOVIE:
             return Object.assign({}, state, { movieList: state.movieList.filter((movie) => movie.id !== action.id) });
+        case TypeKeys.TOGGLE_FILTER_MODAL:
+            return Object.assign({}, state, { filterIsOpen: !state.filterIsOpen });
         default:
             return state;
     }

@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import Header from '../Header';
 import EditForm from '../EditForm';
-import { MovieType } from '../../model/Movie';
+import Movie from '../../model/Movie';
 
 export interface Props {
-  movie: MovieType;
+  movie: Movie;
 }
 
 class EditMoviePage extends Component<Props, any> {

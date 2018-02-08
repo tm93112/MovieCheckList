@@ -8,6 +8,7 @@ export var TypeKeys;
     TypeKeys["SORT"] = "SORT";
     TypeKeys["LOAD_MOVIES"] = "LOAD_MOVIES";
     TypeKeys["DELETE_MOVIE"] = "DELETE_MOVIE";
+    TypeKeys["TOGGLE_FILTER_MODAL"] = "TOGGLE_FILTER_MODAL";
 })(TypeKeys || (TypeKeys = {}));
 /***** actions ******/
 export function addMovie(movie) {
@@ -48,6 +49,11 @@ export function deleteMovie(id) {
     return {
         type: TypeKeys.DELETE_MOVIE,
         id
+    };
+}
+export function toggleFilter() {
+    return {
+        type: TypeKeys.TOGGLE_FILTER_MODAL
     };
 }
 //# sourceMappingURL=index.js.map

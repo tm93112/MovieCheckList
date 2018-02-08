@@ -8,7 +8,8 @@ export enum TypeKeys {
   UPDATE_MOVIE = 'UPDATE_MOVIE',
   SORT = 'SORT',
   LOAD_MOVIES = 'LOAD_MOVIES',
-  DELETE_MOVIE = 'DELETE_MOVIE'
+  DELETE_MOVIE = 'DELETE_MOVIE',
+  TOGGLE_FILTER_MODAL = 'TOGGLE_FILTER_MODAL'
 }
 
 export interface AddMovieAction {
@@ -44,6 +45,10 @@ export interface DeleteMovieAction {
   id: string;
 }
 
+export interface ToggleFilterModal {
+  type: TypeKeys.TOGGLE_FILTER_MODAL;
+}
+
 export type ActionTypes =
   | AddMovieAction
   | ToggleMovieAction
@@ -51,6 +56,7 @@ export type ActionTypes =
   | UpdateMovieAction
   | SortAction
   | LoadMoviesAction
+  | ToggleFilterModal
 
 /***** actions ******/
 export function addMovie(movie: Movie): AddMovieAction {
@@ -97,5 +103,11 @@ export function deleteMovie(id: string): DeleteMovieAction {
   return {
     type: TypeKeys.DELETE_MOVIE,
     id
+  };
+}
+
+export function toggleFilter(): ToggleFilterModal {
+  return {
+    type: TypeKeys.TOGGLE_FILTER_MODAL
   };
 }

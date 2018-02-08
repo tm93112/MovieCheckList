@@ -41,6 +41,8 @@ let movieService = {
             runTime: movie.runTime,
             createdAt: movie.createDate,
             updatedAt: movie.updatedDate
+        }).catch((error) => {
+            console.log(error);
         });
     },
     update: function (movie) {
@@ -60,6 +62,8 @@ let movieService = {
             runTime: movie.runTime,
             createdAt: movie.createDate,
             updatedAt: movie.updatedDate
+        }).catch((error) => {
+            console.log(error);
         });
     },
     delete: function (id) {
@@ -68,7 +72,7 @@ let movieService = {
         repository.write(() => {
             repository.delete(movie);
         });
-        axios.delete(MOVIE_SERVER_URL + `/${id}`);
+        axios.delete(MOVIE_SERVER_URL + `/${id}`).catch((error) => console.log(error));
     }
 };
 export default movieService;

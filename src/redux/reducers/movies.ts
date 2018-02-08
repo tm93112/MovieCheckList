@@ -12,12 +12,14 @@ export type MovieCheckListState = {
   displayCompleted: boolean;
   movieList: Array<Movie>;
   isLoading: boolean;
+  filterIsOpen: boolean;
 }
 
 const initialState: MovieCheckListState = {
   displayCompleted: false,
   movieList: [],
-  isLoading: true
+  isLoading: true,
+  filterIsOpen: false
 }
 
 const movies = (state: MovieCheckListState = initialState, action: ActionType): MovieCheckListState => {
@@ -27,7 +29,7 @@ const movies = (state: MovieCheckListState = initialState, action: ActionType): 
         ...state,
         movieList: action.movieList,
         isLoading: false
-      }
+      };
     case TypeKeys.ADD_MOVIE:
       const newMovie = new Movie(action.movie.title);
       newMovie.id = action.movie.id;
@@ -38,7 +40,7 @@ const movies = (state: MovieCheckListState = initialState, action: ActionType): 
           ...state.movieList,
           newMovie
         ]
-      }
+      };
     case TypeKeys.UPDATE_MOVIE:
       return {
         ...state,
@@ -57,7 +59,7 @@ const movies = (state: MovieCheckListState = initialState, action: ActionType): 
           )
         ],
         isLoading: true
-      }
+      };
     case TypeKeys.TOGGLE_MOVIE:
       return {
         ...state,
@@ -71,22 +73,27 @@ const movies = (state: MovieCheckListState = initialState, action: ActionType): 
             : movie
           )
         ]
-      }
+      };
     case TypeKeys.TOGGLE_DISPLAY_COMPLETED:
       return {
         ...state,
         displayCompleted: !state.displayCompleted
-      }
+      };
     case TypeKeys.SORT:
       return {
         ...state,
         movieList: state.movieList.slice().sort((a: Movie, b: Movie) => compare(a, b))
-      }
+      };
     case TypeKeys.DELETE_MOVIE:
       return {
         ...state,
         movieList: state.movieList.filter((movie: Movie) => movie.id !== action.id)
-      }
+      };
+    case TypeKeys.TOGGLE_FILTER_MODAL:
+      return {
+        ...state,
+        filterIsOpen: !state.filterIsOpen
+      };
     default:
       return state;
   }

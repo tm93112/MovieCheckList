@@ -1,19 +1,5 @@
 import uuid from '../utils/utils';
 
-export type MovieType = {
-  title: string;
-  id?: string;
-  completed?: boolean;
-  trailerURL?: string;
-  imdbURL?: string;
-  imdbID?: string;
-  genres?: Array<string>;
-  languages?: Array<string>;
-  year?: string;
-  runTime?: string;
-  omdbData?: OmdbDataType;
-}
-
 export type OmdbDataType = {
   imdbURL: string;
   imdbID: string;
