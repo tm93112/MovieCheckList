@@ -1,4 +1,5 @@
 import Movie from '../../model/Movie';
+import { FilterType } from '../../components/FilterForm';
 
 /***** action types *****/
 export enum TypeKeys {
@@ -9,7 +10,11 @@ export enum TypeKeys {
   SORT = 'SORT',
   LOAD_MOVIES = 'LOAD_MOVIES',
   DELETE_MOVIE = 'DELETE_MOVIE',
-  TOGGLE_FILTER_MODAL = 'TOGGLE_FILTER_MODAL'
+  TOGGLE_FILTER_MODAL = 'TOGGLE_FILTER_MODAL',
+  UPDATE_FILTER = 'UPDATE_FILTER',
+  TOGGLE_ERROR = 'TOGGLE_ERROR',
+  REFRESH = 'REFRESH',
+  TOGGLE_RANDOM_MODAL = 'TOGGLE_RANDOM_MODAL'
 }
 
 export interface AddMovieAction {
@@ -49,6 +54,23 @@ export interface ToggleFilterModal {
   type: TypeKeys.TOGGLE_FILTER_MODAL;
 }
 
+export interface UpdateFilterAction {
+  type: TypeKeys.UPDATE_FILTER,
+  filtersToApply: FilterType
+}
+
+export interface ToggleErrorAction {
+  type: TypeKeys.TOGGLE_ERROR
+}
+
+export interface RefreshAction {
+  type: TypeKeys.REFRESH
+}
+
+export interface ToggleRandomModalAction {
+  type: TypeKeys.TOGGLE_RANDOM_MODAL
+}
+
 export type ActionTypes =
   | AddMovieAction
   | ToggleMovieAction
@@ -57,6 +79,10 @@ export type ActionTypes =
   | SortAction
   | LoadMoviesAction
   | ToggleFilterModal
+  | UpdateFilterAction
+  | ToggleErrorAction
+  | RefreshAction
+  | ToggleRandomModalAction
 
 /***** actions ******/
 export function addMovie(movie: Movie): AddMovieAction {
@@ -110,4 +136,29 @@ export function toggleFilter(): ToggleFilterModal {
   return {
     type: TypeKeys.TOGGLE_FILTER_MODAL
   };
+}
+
+export function updateFilters(filtersToApply: FilterType): UpdateFilterAction {
+  return {
+    type: TypeKeys.UPDATE_FILTER,
+    filtersToApply
+  }
+}
+
+export function toggleError(): ToggleErrorAction {
+  return {
+    type: TypeKeys.TOGGLE_ERROR
+  }
+}
+
+export function refresh(): RefreshAction {
+  return {
+    type: TypeKeys.REFRESH
+  }
+}
+
+export function toggleRandom(): ToggleRandomModalAction {
+  return {
+    type: TypeKeys.TOGGLE_RANDOM_MODAL
+  }
 }

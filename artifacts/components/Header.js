@@ -4,10 +4,10 @@ import { Actions } from 'react-native-router-flux';
 import NavigationBar from 'react-native-navbar';
 import FontAwesome, { Icons } from 'react-native-fontawesome';
 import { connect } from 'react-redux';
-import { toggleFilter } from '../redux/actions';
+import { toggleFilter, toggleRandom } from '../redux/actions';
 class Header extends Component {
     render() {
-        const { headerText, returnIcon, toggleFilterModal, filterIcon } = this.props;
+        const { headerText, returnIcon, toggleFilterModal, filterIcon, randomIcon, toggleRandomModal } = this.props;
         const titleConfig = {
             title: headerText,
             tintColor: '#ffffff',
@@ -15,11 +15,18 @@ class Header extends Component {
             ellipsizeMode: 'tail',
             numberOfLines: 1
         };
-        const icon = returnIcon
-            ? (React.createElement(TouchableOpacity, { onPress: Actions.home },
+        let icon = undefined;
+        if (returnIcon) {
+            icon = (React.createElement(TouchableOpacity, { onPress: Actions.home },
                 React.createElement(View, { style: { padding: 10 } },
-                    React.createElement(FontAwesome, { style: { fontSize: 24, color: '#FFFFFF' } }, Icons.arrowLeft))))
-            : undefined;
+                    React.createElement(FontAwesome, { style: { fontSize: 24, color: '#FFFFFF' } }, Icons.arrowLeft))));
+        }
+        else if (randomIcon) {
+            icon =
+                (React.createElement(TouchableOpacity, { onPress: () => toggleRandomModal() },
+                    React.createElement(View, { style: { padding: 10 } },
+                        React.createElement(FontAwesome, { style: { fontSize: 24, color: '#FFFFFF' } }, Icons.random))));
+        }
         const filter = filterIcon
             ? (React.createElement(TouchableOpacity, { onPress: () => toggleFilterModal() },
                 React.createElement(View, { style: { padding: 10 } },
@@ -30,7 +37,8 @@ class Header extends Component {
 }
 function mapDispatchToProps(dispatch) {
     return {
-        toggleFilterModal: () => dispatch(toggleFilter())
+        toggleFilterModal: () => dispatch(toggleFilter()),
+        toggleRandomModal: () => dispatch(toggleRandom())
     };
 }
 export default connect(null, mapDispatchToProps)(Header);

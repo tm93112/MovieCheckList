@@ -6,9 +6,9 @@ import MovieList from '../MovieList';
 class Landing extends Component {
     render() {
         const { movieList } = this.props;
-        const filterIcon = movieList.length > 0;
+        const moviesPresent = movieList.length > 0;
         return (React.createElement(View, { style: { flex: 1 } },
-            React.createElement(Header, { headerText: 'Movie List', filterIcon: filterIcon }),
+            React.createElement(Header, { headerText: 'Movie List', filterIcon: moviesPresent, randomIcon: moviesPresent }),
             React.createElement(MovieList, null)));
     }
 }

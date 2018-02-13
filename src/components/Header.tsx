@@ -6,19 +6,21 @@ import FontAwesome, { Icons } from 'react-native-fontawesome';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { MovieCheckListState } from '../redux/reducers/movies';
-import { toggleFilter } from '../redux/actions';
+import { toggleFilter, toggleRandom } from '../redux/actions';
 
 export interface Props {
     headerText: string,
     returnIcon?: boolean,
     filterIcon?: boolean,
     toggleFilterModal: () => void;
+    randomIcon?: boolean;
+    toggleRandomModal: () => void;
 }
 
 class Header extends Component<Props, any> {
 
   render() {
-    const { headerText, returnIcon, toggleFilterModal, filterIcon } = this.props;
+    const { headerText, returnIcon, toggleFilterModal, filterIcon, randomIcon, toggleRandomModal } = this.props;
     const titleConfig = {
       title: headerText,
       tintColor: '#ffffff',
@@ -27,15 +29,26 @@ class Header extends Component<Props, any> {
       numberOfLines: 1
     };
 
-    const icon = returnIcon
-      ? (<TouchableOpacity onPress={Actions.home}>
-        <View style={{ padding: 10 }}>
-          <FontAwesome style={{ fontSize: 24, color: '#FFFFFF'}}>
-            {Icons.arrowLeft}
-          </FontAwesome>
-        </View>
-      </TouchableOpacity>)
-      : undefined;
+    let icon = undefined;
+
+    if (returnIcon) {
+      icon = (<TouchableOpacity onPress={Actions.home}>
+      <View style={{ padding: 10 }}>
+        <FontAwesome style={{ fontSize: 24, color: '#FFFFFF'}}>
+          {Icons.arrowLeft}
+        </FontAwesome>
+      </View>
+    </TouchableOpacity>)
+    } else if (randomIcon) {
+      icon =
+      (<TouchableOpacity onPress={() => toggleRandomModal()}>
+      <View style={{ padding: 10 }}>
+        <FontAwesome style={{ fontSize: 24, color: '#FFFFFF' }}>
+          {Icons.random}
+        </FontAwesome>
+      </View>
+    </TouchableOpacity>)
+    }
 
     const filter = filterIcon
       ? (<TouchableOpacity onPress={() => toggleFilterModal()}>
@@ -60,7 +73,8 @@ class Header extends Component<Props, any> {
 
 function mapDispatchToProps(dispatch: Dispatch<MovieCheckListState>) {
   return {
-    toggleFilterModal: () => dispatch(toggleFilter())
+    toggleFilterModal: () => dispatch(toggleFilter()),
+    toggleRandomModal: () => dispatch(toggleRandom())
   };
 }
 

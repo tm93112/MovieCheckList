@@ -1,11 +1,13 @@
 import Movie from '../../model/Movie';
 import { TypeKeys } from '../actions';
+import { FilterType } from '../../components/FilterForm';
 
 export interface ActionType {
   type: TypeKeys;
   movie?: Movie;
   movieList?: Array<Movie>;
   id?: string;
+  filtersToApply?: FilterType
 }
 
 export type MovieCheckListState = {
@@ -13,13 +15,27 @@ export type MovieCheckListState = {
   movieList: Array<Movie>;
   isLoading: boolean;
   filterIsOpen: boolean;
+  filtersToApply: FilterType;
+  isErred: boolean;
+  randomIsOpen: boolean;
 }
 
 const initialState: MovieCheckListState = {
   displayCompleted: false,
   movieList: [],
   isLoading: true,
-  filterIsOpen: false
+  filterIsOpen: false,
+  filtersToApply: {
+    lessThan120MinOnly: false,
+    englishOnly: false,
+    youngerThan50yrsOnly: false,
+    includeComedy: true,
+    includeDrama: true,
+    includeHorror: true,
+    includeAllGenres: true
+  },
+  isErred: false,
+  randomIsOpen: false
 }
 
 const movies = (state: MovieCheckListState = initialState, action: ActionType): MovieCheckListState => {
@@ -28,7 +44,8 @@ const movies = (state: MovieCheckListState = initialState, action: ActionType): 
       return {
         ...state,
         movieList: action.movieList,
-        isLoading: false
+        isLoading: false,
+        isErred: false
       };
     case TypeKeys.ADD_MOVIE:
       const newMovie = new Movie(action.movie.title);
@@ -82,7 +99,7 @@ const movies = (state: MovieCheckListState = initialState, action: ActionType): 
     case TypeKeys.SORT:
       return {
         ...state,
-        movieList: state.movieList.slice().sort((a: Movie, b: Movie) => compare(a, b))
+        movieList: state.movieList.slice().sort((a: Movie, b: Movie) => compareMovieTitles(a, b))
       };
     case TypeKeys.DELETE_MOVIE:
       return {
@@ -94,12 +111,32 @@ const movies = (state: MovieCheckListState = initialState, action: ActionType): 
         ...state,
         filterIsOpen: !state.filterIsOpen
       };
+    case TypeKeys.UPDATE_FILTER:
+      return {
+        ...state,
+        filtersToApply: action.filtersToApply
+      }
+    case TypeKeys.TOGGLE_ERROR:
+      return {
+        ...state,
+        isErred: !state.isErred
+      }
+    case TypeKeys.REFRESH:
+      return {
+        ...state,
+        isLoading: true
+      }
+    case TypeKeys.TOGGLE_RANDOM_MODAL:
+      return {
+        ...state,
+        randomIsOpen: !state.randomIsOpen
+      }
     default:
       return state;
   }
 }
 
-function compare(a: Movie, b: Movie): number {
+function compareMovieTitles(a: Movie, b: Movie): number {
   if (a.title < b.title) {
     return -1;
   }

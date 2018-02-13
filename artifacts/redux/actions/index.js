@@ -9,6 +9,10 @@ export var TypeKeys;
     TypeKeys["LOAD_MOVIES"] = "LOAD_MOVIES";
     TypeKeys["DELETE_MOVIE"] = "DELETE_MOVIE";
     TypeKeys["TOGGLE_FILTER_MODAL"] = "TOGGLE_FILTER_MODAL";
+    TypeKeys["UPDATE_FILTER"] = "UPDATE_FILTER";
+    TypeKeys["TOGGLE_ERROR"] = "TOGGLE_ERROR";
+    TypeKeys["REFRESH"] = "REFRESH";
+    TypeKeys["TOGGLE_RANDOM_MODAL"] = "TOGGLE_RANDOM_MODAL";
 })(TypeKeys || (TypeKeys = {}));
 /***** actions ******/
 export function addMovie(movie) {
@@ -54,6 +58,27 @@ export function deleteMovie(id) {
 export function toggleFilter() {
     return {
         type: TypeKeys.TOGGLE_FILTER_MODAL
+    };
+}
+export function updateFilters(filtersToApply) {
+    return {
+        type: TypeKeys.UPDATE_FILTER,
+        filtersToApply
+    };
+}
+export function toggleError() {
+    return {
+        type: TypeKeys.TOGGLE_ERROR
+    };
+}
+export function refresh() {
+    return {
+        type: TypeKeys.REFRESH
+    };
+}
+export function toggleRandom() {
+    return {
+        type: TypeKeys.TOGGLE_RANDOM_MODAL
     };
 }
 //# sourceMappingURL=index.js.map

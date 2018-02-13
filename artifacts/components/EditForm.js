@@ -36,7 +36,7 @@ class EditForm extends Component {
             return (React.createElement(View, { style: style.editInput },
                 React.createElement(TextInput, { value: field, returnKeyType: 'done', autoCorrect: false, autoFocus: true, onChangeText: (text) => onChangeText(text, fieldName, movie), onSubmitEditing: (event) => onSubmitEditing(event.nativeEvent.text, fieldName, movie) })));
         }
-        if (fieldName) {
+        if (fieldName && field !== null) {
             return (React.createElement(TouchableOpacity, { onPress: () => Linking.openURL(field) },
                 React.createElement(Text, { style: style.textField }, field)));
         }

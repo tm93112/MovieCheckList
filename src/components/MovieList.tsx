@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
-import { Results } from 'realm';
-import { ScrollView, View, TouchableOpacity, FlatList, Text, StyleSheet, Modal } from 'react-native';
+import {
+  ScrollView,
+  View,
+  TouchableOpacity,
+  FlatList,
+  Text,
+  StyleSheet,
+  Modal,
+  RefreshControl,
+  Button
+} from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -10,28 +19,40 @@ import {
   toggleDisplayCompleted,
   sortMovieList,
   loadMovies,
-  toggleFilter
+  toggleError,
+  refresh,
+  toggleRandom
 } from '../redux/actions';
 import { MovieCheckListState } from '../redux/reducers/movies';
 import { Store } from '../redux/reducers';
+import MovieService from '../services/MovieService';
 import ListItem from './ListItem';
 import NewMovieInput from './NewMovieInput';
 import Footer from './Footer';
-import MovieService from '../services/MovieService';
 import Movie from '../model/Movie';
+import FilterForm, { FilterType } from '../components/FilterForm';
 
 const MOVIE_SERVER_URL = 'http://192.168.1.10:8080/api/movies';
 
 export interface Props {
   movieList: Array<Movie>;
-  onMovieCheck: () => void;
+  onMovieCheck: (id: string) => void;
   displayCompleted: boolean;
   onShowCompletedClick: () => void;
   sort: () => void;
   load: (movieList: Array<Movie>) => any;
   isLoading: boolean;
   filterIsOpen: boolean;
-  toggleFilterModal: () => void;
+  filtersToApply: FilterType;
+  toggleErr: () => void;
+  isErred: boolean;
+  reload: () => void;
+  randomIsOpen: boolean;
+  toggleRandomModal: () => void;
+}
+
+export interface State {
+  isRefreshing: boolean;
 }
 
 type OnMovieCheckType = (id: string) => void;
@@ -39,7 +60,9 @@ type OnMovieCheckType = (id: string) => void;
 function MovieList(props) {
   const { movieList, displayCompleted, onMovieCheck, footer, renderItem } = props;
   return(
-    <ScrollView contentContainerStyle={styles.listContainer}>
+    <ScrollView
+      contentContainerStyle={styles.listContainer}
+    >
       <FlatList
         data={movieList}
         extraData={displayCompleted}
@@ -51,7 +74,14 @@ function MovieList(props) {
   );
 }
 
-class MovieListContainer extends Component<Props, any> {
+class MovieListContainer extends Component<Props, State> {
+
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      isRefreshing: false
+    }
+  }
 
   renderItem(movie: any, onMovieCheck: OnMovieCheckType, displayCompleted: boolean, isCompletedList?: boolean) {
     const { item } = movie;
@@ -71,24 +101,21 @@ class MovieListContainer extends Component<Props, any> {
     }
   }
 
-  componentDidMount() {
-    const { load } = this.props;
-    let movieList = [];
+  loadMovies = () => {
+    const { load, toggleErr } = this.props;
     axios.get(MOVIE_SERVER_URL, { timeout: 10000 })
       .then((response) => {
         const serverMovies = response.data;
-        let ids = [];
-        if (serverMovies.length > 0) {
-          ids = serverMovies.map((movie: Movie) => movie.id);
-        }
-        const localMovies: Results<{}> = MovieService.findAll();
-        const newLocal = localMovies.filter((movie: Movie) => !ids.includes(movie.id));
-        movieList = [...new Set([...serverMovies ,...newLocal])];
-        load(movieList);
+        load(serverMovies);
+        this.setState({ isRefreshing: false })
       })
       .catch(() => {
-        load(movieList);
+        toggleErr();
       });
+  }
+
+  componentDidMount() {
+    this.loadMovies();
   }
 
   shouldComponentUpdate(nextProps: any, nextState: any) {
@@ -96,6 +123,13 @@ class MovieListContainer extends Component<Props, any> {
       return true;
     }
     return false;
+  }
+
+  tickMovie = (id: string) => {
+    this.props.onMovieCheck(id);
+    const movieToUpdate = this.props.movieList.find((movie: Movie) => movie.id === id);
+    movieToUpdate.completed = true;
+    MovieService.update(movieToUpdate);
   }
 
   renderFooter(movieList: Array<Movie>, displayCompleted: boolean,
@@ -126,18 +160,90 @@ class MovieListContainer extends Component<Props, any> {
     }
   }
 
+  filterMovies(movieList: Array<Movie>, filtersToApply: FilterType): Array<Movie> {
+    const filteredList = movieList.filter((movie: Movie) => {
+      let matchesLanguage = true;
+      let matchesLength = true;
+      let matchesAge = true;
+      let matchesGenre = true;
+      if (filtersToApply.englishOnly) {
+        if (movie.languages && movie.languages.length > 0 && !movie.languages.includes('English')) {
+          matchesLanguage = false;
+        }
+      }
+      if (filtersToApply.lessThan120MinOnly) {
+        if (movie.runTime && Number(movie.runTime) > 120) {
+          matchesLength = false;
+        }
+      }
+      if (filtersToApply.youngerThan50yrsOnly) {
+        if (movie.year && ((new Date()).getFullYear() - Number(movie.year) > 50)) {
+          matchesAge = false;
+        }
+      }
+      if (filtersToApply.includeAllGenres) {
+        matchesGenre = true;
+      } else if (movie.genres && movie.genres.length > 0) {
+        if (filtersToApply.includeComedy) {
+          if (!movie.genres.includes('Comedy')) {
+            matchesGenre = false;
+          }
+        }
+        if (filtersToApply.includeDrama) {
+          if (!movie.genres.includes('Drama')) {
+            matchesGenre = false;
+          }
+        }
+        if (filtersToApply.includeHorror) {
+          if (!movie.genres.includes('Horror')) {
+            matchesGenre = false;
+          }
+        }
+      }
+      return matchesLanguage && matchesLength && matchesAge && matchesGenre;
+    });
+    return filteredList;
+  }
+
+  refreshErrorList = () => {
+    this.setState({ isRefreshing: true });
+    this.props.toggleErr();
+    this.loadMovies();
+    this.setState({ isRefreshing: false });
+  }
+
   render(){
     const {
       movieList,
-      onMovieCheck,
       displayCompleted,
       onShowCompletedClick,
       sort,
       isLoading,
       filterIsOpen,
-      toggleFilterModal
+      filtersToApply,
+      isErred,
+      randomIsOpen,
+      toggleRandomModal
     } = this.props;
-    const footer = this.renderFooter(movieList, displayCompleted, onMovieCheck, onShowCompletedClick);
+    const footer = this.renderFooter(movieList, displayCompleted, this.tickMovie, onShowCompletedClick);
+    const filteredList = this.filterMovies(movieList, filtersToApply);
+    const randomMovie = filteredList
+      .filter((movie: Movie) => !movie.completed)[Math.floor(Math.random() * (filteredList.length - 1))]
+    if (isErred) {
+      return(
+        <ScrollView
+          style={{ flex: 1 }}
+          refreshControl={
+            <RefreshControl
+              onRefresh={() => this.refreshErrorList()}
+              refreshing={this.state.isRefreshing}
+            />
+          }
+        >
+          <Text>Unable to retrieve movies. Swipe down to refresh.</Text>
+        </ScrollView>
+      )
+    }
     if (isLoading) {
       return(
         <View style={{ flex: 1}}>
@@ -149,16 +255,15 @@ class MovieListContainer extends Component<Props, any> {
       <View style={{ flex: 1 }}>
         <NewMovieInput />
         <MovieList
-          movieList={movieList}
+          movieList={filteredList}
           displayCompleted={displayCompleted}
-          onMovieCheck={onMovieCheck}
+          onMovieCheck={this.tickMovie}
           footer={footer}
           renderItem={this.renderItem}
         />
         <Modal
           transparent={true}
           visible={filterIsOpen}
-          onRequestClose={() => toggleFilterModal()}
         >
           <View
             style={{
@@ -169,8 +274,31 @@ class MovieListContainer extends Component<Props, any> {
               backgroundColor: '#00000080'
             }}
           >
-            <View style={{ width: 200, height: 200, backgroundColor: '#ffffff' }}>
-              <Text>Test</Text>
+            <View style={styles.modal}>
+              <FilterForm />
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          transparent={true}
+          visible={randomIsOpen}
+        >
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '#00000080'
+            }}
+          >
+            <View style={styles.randomModal}>
+              <Text style={{ fontSize: 24, marginBottom: 15 }}>The App Has Spoken:</Text>
+              <Text style={{ fontSize: 18, marginBottom: 15 }}>{randomMovie.title}</Text>
+              <Button
+                  title={'Close'}
+                  onPress={() => toggleRandomModal()}
+              />
             </View>
           </View>
         </Modal>
@@ -213,6 +341,20 @@ const styles = StyleSheet.create({
 
   showCompletedText : {
     fontSize: 13
+  },
+
+  modal: {
+    width: 300,
+    height: 300,
+    backgroundColor: '#ffffff',
+    padding: 10
+  },
+
+  randomModal: {
+    width: 300,
+    height: 150,
+    padding: 10,
+    backgroundColor: '#FFFFFF'
   }
 });
 
@@ -221,17 +363,24 @@ function mapStateToProps(state: Store) {
     movieList: state.movies.movieList,
     displayCompleted: state.movies.displayCompleted,
     isLoading: state.movies.isLoading,
-    filterIsOpen: state.movies.filterIsOpen
+    filterIsOpen: state.movies.filterIsOpen,
+    filtersToApply: state.movies.filtersToApply,
+    isErred: state.movies.isErred,
+    randomIsOpen: state.movies.randomIsOpen
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<MovieCheckListState>) {
   return {
-    onMovieCheck: (id: string) => dispatch(toggleMovie(id)),
+    onMovieCheck: (id: string) => {
+      dispatch(toggleMovie(id));
+    },
     onShowCompletedClick: () => dispatch(toggleDisplayCompleted()),
     sort: () => dispatch(sortMovieList()),
     load: (movieList: Array<Movie>) => dispatch(loadMovies(movieList)),
-    toggleFilterModal: () => dispatch(toggleFilter())
+    toggleErr: () => dispatch(toggleError()),
+    reload: () => dispatch(refresh()),
+    toggleRandomModal: () => dispatch(toggleRandom())
   }
 }
 

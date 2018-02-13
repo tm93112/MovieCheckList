@@ -14,12 +14,13 @@ class Landing extends Component<Props, any> {
 
   render() {
     const { movieList } = this.props;
-    const filterIcon = movieList.length > 0;
+    const moviesPresent = movieList.length > 0;
     return(
       <View style = {{ flex: 1 }}>
         <Header
           headerText={'Movie List'}
-          filterIcon={filterIcon}
+          filterIcon={moviesPresent}
+          randomIcon={moviesPresent}
         />
         <MovieList />
       </View>

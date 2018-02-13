@@ -81,7 +81,7 @@ class EditForm extends Component<Props, State> {
         </View>
       );
     }
-    if (fieldName) {
+    if (fieldName && field !== null) {
       return (
         <TouchableOpacity
           onPress={() => Linking.openURL(field)}
