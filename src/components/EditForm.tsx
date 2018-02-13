@@ -56,12 +56,16 @@ class EditForm extends Component<Props, State> {
   }
 
   setValuesFromOMDB(url: string, movie: Movie) {
-    const imdbID = this.parseIMDBurlForID(url);
-    movie.imdbID = imdbID;
-    this.setDataFromOMDB(movie);
-    this.setState({
-      movie
-    });
+    try {
+      const imdbID = this.parseIMDBurlForID(url);
+      movie.imdbID = imdbID;
+      this.setDataFromOMDB(movie);
+      this.setState({
+        movie
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   renderField(field: string, isEditing: boolean, onChangeText: OnChangeTextType,

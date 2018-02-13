@@ -157,8 +157,8 @@ class MovieListContainer extends Component {
                         backgroundColor: '#00000080'
                     } },
                     React.createElement(View, { style: styles.randomModal },
-                        React.createElement(Text, { style: { fontSize: 24, marginBottom: 15 } }, "The App Has Spoken:"),
-                        React.createElement(Text, { style: { fontSize: 18, marginBottom: 15 } }, randomMovie.title),
+                        React.createElement(Text, { style: { fontSize: 24, justifyContent: 'center' } }, "The App Has Spoken:"),
+                        React.createElement(Text, { style: { fontSize: 18 } }, randomMovie.title),
                         React.createElement(Button, { title: 'Close', onPress: () => toggleRandomModal() })))),
             React.createElement(Footer, { onPress: sort })));
     }
@@ -201,7 +201,9 @@ const styles = StyleSheet.create({
         width: 300,
         height: 150,
         padding: 10,
-        backgroundColor: '#FFFFFF'
+        backgroundColor: '#FFFFFF',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
     }
 });
 function mapStateToProps(state) {

@@ -293,8 +293,8 @@ class MovieListContainer extends Component<Props, State> {
             }}
           >
             <View style={styles.randomModal}>
-              <Text style={{ fontSize: 24, marginBottom: 15 }}>The App Has Spoken:</Text>
-              <Text style={{ fontSize: 18, marginBottom: 15 }}>{randomMovie.title}</Text>
+              <Text style={{ fontSize: 24, justifyContent: 'center' }}>The App Has Spoken:</Text>
+              <Text style={{ fontSize: 18 }}>{randomMovie.title}</Text>
               <Button
                   title={'Close'}
                   onPress={() => toggleRandomModal()}
@@ -354,7 +354,9 @@ const styles = StyleSheet.create({
     width: 300,
     height: 150,
     padding: 10,
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
   }
 });
 

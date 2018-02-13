@@ -23,12 +23,17 @@ class EditForm extends Component {
         return imdbURL.substring(imdbURL.indexOf(path) + path.length, imdbURL.indexOf('/?'));
     }
     setValuesFromOMDB(url, movie) {
-        const imdbID = this.parseIMDBurlForID(url);
-        movie.imdbID = imdbID;
-        this.setDataFromOMDB(movie);
-        this.setState({
-            movie
-        });
+        try {
+            const imdbID = this.parseIMDBurlForID(url);
+            movie.imdbID = imdbID;
+            this.setDataFromOMDB(movie);
+            this.setState({
+                movie
+            });
+        }
+        catch (error) {
+            console.log(error);
+        }
     }
     renderField(field, isEditing, onChangeText, onSubmitEditing, fieldName) {
         const { movie } = this.state;
