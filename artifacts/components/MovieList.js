@@ -125,8 +125,8 @@ class MovieListContainer extends Component {
         const { movieList, displayCompleted, onShowCompletedClick, sort, isLoading, filterIsOpen, filtersToApply, isErred, randomIsOpen, toggleRandomModal } = this.props;
         const footer = this.renderFooter(movieList, displayCompleted, this.tickMovie, onShowCompletedClick);
         const filteredList = this.filterMovies(movieList, filtersToApply);
-        const randomMovie = filteredList
-            .filter((movie) => !movie.completed)[Math.floor(Math.random() * (filteredList.length - 1))];
+        const completedList = filteredList.filter((movie) => !movie.completed);
+        const randomMovie = completedList[Math.floor(Math.random() * (filteredList.length - 1))];
         if (isErred) {
             return (React.createElement(ScrollView, { style: { flex: 1 }, refreshControl: React.createElement(RefreshControl, { onRefresh: () => this.refreshErrorList(), refreshing: this.state.isRefreshing }) },
                 React.createElement(Text, null, "Unable to retrieve movies. Swipe down to refresh.")));
@@ -135,6 +135,9 @@ class MovieListContainer extends Component {
             return (React.createElement(View, { style: { flex: 1 } },
                 React.createElement(Text, null, "Loading...")));
         }
+        const randomTitle = randomMovie
+            ? (React.createElement(Text, { style: { fontSize: 18 } }, randomMovie.title))
+            : undefined;
         return (React.createElement(View, { style: { flex: 1 } },
             React.createElement(NewMovieInput, null),
             React.createElement(MovieList, { movieList: filteredList, displayCompleted: displayCompleted, onMovieCheck: this.tickMovie, footer: footer, renderItem: this.renderItem }),
@@ -158,7 +161,7 @@ class MovieListContainer extends Component {
                     } },
                     React.createElement(View, { style: styles.randomModal },
                         React.createElement(Text, { style: { fontSize: 24, justifyContent: 'center' } }, "The App Has Spoken:"),
-                        React.createElement(Text, { style: { fontSize: 18 } }, randomMovie.title),
+                        randomTitle,
                         React.createElement(Button, { title: 'Close', onPress: () => toggleRandomModal() })))),
             React.createElement(Footer, { onPress: sort })));
     }

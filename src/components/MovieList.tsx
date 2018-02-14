@@ -227,8 +227,8 @@ class MovieListContainer extends Component<Props, State> {
     } = this.props;
     const footer = this.renderFooter(movieList, displayCompleted, this.tickMovie, onShowCompletedClick);
     const filteredList = this.filterMovies(movieList, filtersToApply);
-    const randomMovie = filteredList
-      .filter((movie: Movie) => !movie.completed)[Math.floor(Math.random() * (filteredList.length - 1))]
+    const completedList = filteredList.filter((movie: Movie) => !movie.completed);
+    const randomMovie = completedList[Math.floor(Math.random() * (filteredList.length - 1))];
     if (isErred) {
       return(
         <ScrollView
@@ -251,6 +251,9 @@ class MovieListContainer extends Component<Props, State> {
         </View>
       );
     }
+    const randomTitle = randomMovie
+      ? (<Text style={{ fontSize: 18 }}>{randomMovie.title}</Text>)
+      : undefined;
     return(
       <View style={{ flex: 1 }}>
         <NewMovieInput />
@@ -294,7 +297,7 @@ class MovieListContainer extends Component<Props, State> {
           >
             <View style={styles.randomModal}>
               <Text style={{ fontSize: 24, justifyContent: 'center' }}>The App Has Spoken:</Text>
-              <Text style={{ fontSize: 18 }}>{randomMovie.title}</Text>
+              {randomTitle}
               <Button
                   title={'Close'}
                   onPress={() => toggleRandomModal()}
