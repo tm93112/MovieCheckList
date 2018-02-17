@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Movie from '../model/Movie';
 
-const MOVIE_SERVER_URL = 'http://192.168.1.10:8080/api/movies';
+export const MOVIE_SERVER_URL = 'http://tmoon.ddns.net:8080/api/movies';
 
 let movieService = {
 

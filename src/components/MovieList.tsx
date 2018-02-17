@@ -25,14 +25,12 @@ import {
 } from '../redux/actions';
 import { MovieCheckListState } from '../redux/reducers/movies';
 import { Store } from '../redux/reducers';
-import MovieService from '../services/MovieService';
+import MovieService, { MOVIE_SERVER_URL } from '../services/MovieService';
 import ListItem from './ListItem';
 import NewMovieInput from './NewMovieInput';
 import Footer from './Footer';
 import Movie from '../model/Movie';
 import FilterForm, { FilterType } from '../components/FilterForm';
-
-const MOVIE_SERVER_URL = 'http://192.168.1.10:8080/api/movies';
 
 export interface Props {
   movieList: Array<Movie>;
@@ -103,7 +101,7 @@ class MovieListContainer extends Component<Props, State> {
 
   loadMovies = () => {
     const { load, toggleErr } = this.props;
-    axios.get(MOVIE_SERVER_URL, { timeout: 10000 })
+    axios.get(MOVIE_SERVER_URL, { timeout: 30000 })
       .then((response) => {
         const serverMovies = response.data;
         load(serverMovies);
