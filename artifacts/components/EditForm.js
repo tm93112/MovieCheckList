@@ -144,8 +144,7 @@ class EditForm extends Component {
         };
         movie.omdbData = omdbData;
         this.props.update(movie);
-        MovieService.update(movie);
-        Actions.home();
+        MovieService.update(movie, () => Actions.home());
     }
     setDataFromOMDB(movie) {
         const url = `${URL_WITH_KEY}${movie.imdbID}`;

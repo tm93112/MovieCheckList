@@ -21,10 +21,10 @@ export default class Movie {
   languages: Array<string>;
   year: string;
   runTime: string;
-  createDate: Date;
-  updatedDate: Date;
+  createdAt: any;
+  updatedAt: any;
   constructor(title: string, id?: string, completed?: boolean,
-     trailerURL?: string, omdbData?: OmdbDataType, createDate?: Date, updatedDate?: Date) {
+     trailerURL?: string, omdbData?: OmdbDataType, createdAt?: Date, updatedAt?: Date) {
     this.id = id || uuid();
     this.title = title;
     this.completed = completed || false;
@@ -44,7 +44,8 @@ export default class Movie {
       this.year = null;
       this.runTime = null;
     }
-    this.createDate = createDate || new Date();
-    this.updatedDate = updatedDate || new Date();
+    if (createdAt) console.log(createdAt);
+    this.createdAt = createdAt || new Date();
+    this.updatedAt = updatedAt || new Date();
   }
 }

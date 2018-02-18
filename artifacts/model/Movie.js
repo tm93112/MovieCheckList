@@ -1,6 +1,6 @@
 import uuid from '../utils/utils';
 export default class Movie {
-    constructor(title, id, completed, trailerURL, omdbData, createDate, updatedDate) {
+    constructor(title, id, completed, trailerURL, omdbData, createdAt, updatedAt) {
         this.id = id || uuid();
         this.title = title;
         this.completed = completed || false;
@@ -21,8 +21,10 @@ export default class Movie {
             this.year = null;
             this.runTime = null;
         }
-        this.createDate = createDate || new Date();
-        this.updatedDate = updatedDate || new Date();
+        if (createdAt)
+            console.log(createdAt);
+        this.createdAt = createdAt || new Date();
+        this.updatedAt = updatedAt || new Date();
     }
 }
 //# sourceMappingURL=Movie.js.map

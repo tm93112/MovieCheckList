@@ -221,8 +221,7 @@ class EditForm extends Component<Props, State> {
     };
     movie.omdbData = omdbData;
     this.props.update(movie);
-    MovieService.update(movie)
-    Actions.home();
+    MovieService.update(movie,() => Actions.home());
   }
 
   setDataFromOMDB(movie: Movie) {

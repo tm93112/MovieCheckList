@@ -19,13 +19,14 @@ class MovieListContainer extends Component {
         super(props);
         this.loadMovies = () => {
             const { load, toggleErr } = this.props;
-            axios.get(MOVIE_SERVER_URL, { timeout: 30000 })
+            axios.get(MOVIE_SERVER_URL, { timeout: 10000 })
                 .then((response) => {
                 const serverMovies = response.data;
                 load(serverMovies);
                 this.setState({ isRefreshing: false });
             })
-                .catch(() => {
+                .catch((error) => {
+                console.log(error);
                 toggleErr();
             });
         };
@@ -82,7 +83,8 @@ class MovieListContainer extends Component {
             let matchesAge = true;
             let matchesGenre = true;
             if (filtersToApply.englishOnly) {
-                if (movie.languages && movie.languages.length > 0 && !movie.languages.includes('English')) {
+                if (movie.languages && movie.languages.length > 0
+                    && movie.languages.length === 1 && !movie.languages.includes('English')) {
                     matchesLanguage = false;
                 }
             }
@@ -118,7 +120,7 @@ class MovieListContainer extends Component {
             }
             return matchesLanguage && matchesLength && matchesAge && matchesGenre;
         });
-        return filteredList;
+        return filteredList.sort((a, b) => b.createdAt - a.createdAt);
     }
     render() {
         const { movieList, displayCompleted, onShowCompletedClick, sort, isLoading, filterIsOpen, filtersToApply, isErred, randomIsOpen, toggleRandomModal } = this.props;

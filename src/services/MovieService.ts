@@ -17,14 +17,14 @@ let movieService = {
       year: movie.year,
       languages: movie.languages,
       runTime: movie.runTime,
-      createdAt: movie.createDate,
-      updatedAt: movie.updatedDate
+      createdAt: movie.createdAt,
+      updatedAt: movie.updatedAt
     }).catch((error) => {
       console.log(error);
     });
   },
 
-  update: function(movie: Movie) {
+  update: function(movie: Movie, afterAction?: () => void) {
     axios.put(MOVIE_SERVER_URL + `/${movie.id}`, {
       id: movie.id,
       title: movie.title,
@@ -36,10 +36,19 @@ let movieService = {
       year: movie.year,
       languages: movie.languages,
       runTime: movie.runTime,
-      createdAt: movie.createDate,
-      updatedAt: movie.updatedDate
-    }).catch((error) => {
+      createdAt: movie.createdAt,
+      updatedAt: movie.updatedAt
+    })
+    .then(() => {
+      if (afterAction) {
+        afterAction();
+      }
+    })
+    .catch((error) => {
       console.log(error);
+      if (afterAction) {
+        afterAction();
+      }
     });
   },
 
